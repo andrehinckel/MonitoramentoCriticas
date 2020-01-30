@@ -2,10 +2,10 @@
 
 namespace Application.Services
 {
-    public interface IComparacaoResultadoPromaxHercules
+    public interface IResultadoPromaxHercules
     {
-        void CriticsSum(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax);
+        void CompararPromaxHercules(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax);
         int GetOKs(int codigoCritica);
-        int GetNOKs(int codigoCritica);
+        string GetNOKs(int codigoCritica, ResultadoCriticaHerculesDto resultadoCriticaHercules);
     }
 }

@@ -10,14 +10,13 @@ namespace Tests.Tests.DomainTest
 {
     public class Teste
     {
-        private readonly IComparacaoResultadoPromaxHercules _comparacaoResultadoPromaxHercules;
+        private readonly IResultadoPromaxHercules _comparacaoResultadoPromaxHercules;
 
         public Teste()
         {
-            _comparacaoResultadoPromaxHercules = new ComparacaoResultadoPromaxHercules();
+            _comparacaoResultadoPromaxHercules = new ResultadoPromaxHercules(3);
 
         }
-
 
         //deve comparar os resultados do teste
         [Test]
@@ -59,7 +58,7 @@ namespace Tests.Tests.DomainTest
                 ChaveUnica = "123456789"
             };
 
-            _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
 
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(1);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(1);
@@ -106,13 +105,13 @@ namespace Tests.Tests.DomainTest
                 ChaveUnica = "123456789"
             };
 
-            _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
 
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(0);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(0);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12345).Should().Be(1);
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should().Be(1);
+            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} no grupo de critica {resultadoHercules.GrupoCritica}");
         }
     }
 }
