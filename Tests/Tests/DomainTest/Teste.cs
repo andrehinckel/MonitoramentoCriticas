@@ -1,41 +1,119 @@
-﻿using FluentAssertions;
+﻿using Application.DTOs;
+using Application.Services;
+using Domain.Entity;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Tests.Builder;
 
 namespace Tests.Tests.DomainTest
 {
     public class Teste
     {
-        [Test]
-        public void deve_retornar_ok()
+        private readonly IComparacaoResultadoPromaxHercules _comparacaoResultadoPromaxHercules;
+
+        public Teste()
         {
-            var resultadoHercules = new ResultadoCriticaHerculesBuilder()
-                .ComDataHoraInicio(new DateTime(2020 - 01 - 30))
-                .ComDataHoraFim(new DateTime(2020 - 01 - 30))
-                .ComCodigoPedido(1)
-                .ComCritica(new CriticaBuilder()
-                .ComAlcada(1)
-                .ComCritica(1)
-                .ComStatus(1)
-                .Construir()).Construir();
+            _comparacaoResultadoPromaxHercules = new ComparacaoResultadoPromaxHercules();
 
-            var resultadoPromax =  new ResultadoCriticaPromaxBuilder()
-                .ComDataHoraInicio(new DateTime(2020 - 01 - 30))
-                .ComDataHoraFim(new DateTime(2020 - 01 - 30))
-                .ComCodigoPedido(1)
-                .ComCritica(new CriticaBuilder()
-                .ComAlcada(1)
-                .ComCritica(1)
-                .ComStatus(1)
-                .Construir()).Construir();
+        }
 
-            resultadoHercules.data_hora_inicio.Should().Equals(resultadoPromax.data_hora_inicio);
-            resultadoHercules.Codigo_pedido.Should().Equals(resultadoPromax.Codigo_pedido);
-            resultadoHercules.data_hora_fim.Should().Equals(resultadoPromax.data_hora_fim);
-            resultadoHercules.Codigo_pedido.Should().Equals(resultadoPromax.Codigo_pedido);
+
+        //deve comparar os resultados do teste
+        [Test]
+        public void deve_retornar_critics_ok()
+        {
+            var critica1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12345
+            };
+
+            var critica2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            List<Critica> criticas = new List<Critica>();
+            criticas.Add(critica1);
+            criticas.Add(critica2);
+
+            var resultadoHercules = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas,
+                ChaveUnica = "123456789"
+            };
+
+            var resultadoPromax = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas,
+                ChaveUnica = "123456789"
+            };
+
+             _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
+
+            _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(1);
+            _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(1);
+        }
+
+        [Test]
+        public void deve_retornar_critics_nok()
+        {
+            var critica1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12345
+            };
+
+            var critica2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            List<Critica> criticas = new List<Critica>();
+            criticas.Add(critica1);
+
+            List<Critica> criticas2 = new List<Critica>();
+            criticas2.Add(critica2);
+
+            var resultadoHercules = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas,
+                ChaveUnica = "123456789"
+            };
+
+            var resultadoPromax = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas2,
+                ChaveUnica = "123456789"
+            };
+
+            _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
+
+            _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(0);
+            _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(0);
+            
+            _comparacaoResultadoPromaxHercules.GetNOKs(12345).Should().Be(1);
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should().Be(1);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,45 +7,45 @@ namespace Tests.Builder
 {
     public class ResultadoCriticaHerculesBuilder
     {
-        public DateTime _data_hora_inicio;
-        public DateTime _data_hora_fim;
-        public string _grupo_de_critica;
+        public DateTime _dataHoraInicio;
+        public DateTime _dataHoraFim;
+        public string _grupoDeCritica;
         public int _status;
-        public int _codigo_pedido;
-        public List<Critica> Critica = new List<Critica>();
-        public int _codigo_filial;
+        public int _codigoPedido;
+        public List<Critica> Criticas = new List<Critica>();
+        public int _codigoFilial;
 
         public ResultadoCriticaHercules Construir()
         {
-            var critica = Critica.Any() ? Critica : new List<Critica>();
+            var critica = Criticas.Any() ? Criticas : new List<Critica>();
 
             return new ResultadoCriticaHercules
             {
-                data_hora_inicio = _data_hora_inicio,
-                data_hora_fim = _data_hora_fim,
-                grupo_de_critica = _grupo_de_critica,
+                data_hora_inicio = _dataHoraInicio,
+                data_hora_fim = _dataHoraFim,
+                grupo_de_critica = _grupoDeCritica,
                 status = _status,
-                Codigo_pedido = _codigo_pedido,
+                Codigo_pedido = _codigoPedido,
                 Critica = critica,
-                codigo_filial = _codigo_filial
+                codigo_filial = _codigoFilial
             };
         }
 
         public ResultadoCriticaHerculesBuilder ComDataHoraInicio(DateTime dataHoraInicio)
         {
-            _data_hora_inicio = dataHoraInicio;
+            _dataHoraInicio = dataHoraInicio;
             return this;
         }
 
         public ResultadoCriticaHerculesBuilder ComDataHoraFim(DateTime dataHoraFim)
         {
-            _data_hora_fim = dataHoraFim;
+            _dataHoraFim = dataHoraFim;
             return this;
         }
 
         public ResultadoCriticaHerculesBuilder ComGrupoCritica(string grupoCritica)
         {
-            _grupo_de_critica = grupoCritica;
+            _grupoDeCritica = grupoCritica;
             return this;
         }
 
@@ -56,72 +57,19 @@ namespace Tests.Builder
 
         public ResultadoCriticaHerculesBuilder ComCodigoPedido(int codigoPedido)
         {
-            _codigo_pedido = codigoPedido;
+            _codigoPedido = codigoPedido;
             return this;
         }
 
         public ResultadoCriticaHerculesBuilder ComCritica(Critica criticas)
         {
-            Critica.Add(criticas);
+            Criticas.Add(criticas);
             return this;
         }
 
         public ResultadoCriticaHerculesBuilder ComCodigoFilial(int codigoFilial)
         {
-            _codigo_filial = codigoFilial;
-            return this;
-        }
-    }
-
-    public class ResultadoCriticaHercules
-    {
-        public DateTime data_hora_inicio;
-        public DateTime data_hora_fim;
-        public string grupo_de_critica;
-        public int status;
-        public int Codigo_pedido;
-        public List<Critica> Critica;
-        public int codigo_filial;
-    }
-
-    public class Critica
-    {
-        public int alcada;
-        public int status;
-        public int critica;
-    }
-
-    public class CriticaBuilder
-    {
-        public int _alcada;
-        public int _status;
-        public int _critica;
-
-        public Critica Construir()
-        {
-            return new Critica()
-            {
-                critica = _critica,
-                alcada = _alcada,
-                status = _status
-            };
-        }
-
-        public CriticaBuilder ComAlcada(int alcada)
-        {
-            _alcada = alcada;
-            return this;
-        }
-
-        public CriticaBuilder ComStatus(int status)
-        {
-            _status = status;
-            return this;
-        }
-
-        public CriticaBuilder ComCritica(int critica)
-        {
-            _critica = critica;
+            _codigoFilial = codigoFilial;
             return this;
         }
     }

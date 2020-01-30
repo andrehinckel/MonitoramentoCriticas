@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,45 +7,45 @@ namespace Tests.Builder
 {
     class ResultadoCriticaPromaxBuilder
     {
-        public DateTime _data_hora_inicio;
-        public DateTime _data_hora_fim;
-        public string _grupo_de_critica;
+        public DateTime _dataHoraInicio;
+        public DateTime _dataHoraFim;
+        public string _grupoDeCritica;
         public int _status;
-        public int _codigo_pedido;
-        public List<Critica> Critica = new List<Critica>();
-        public int _codigo_filial;
+        public int _codigoPedido;
+        public List<Critica> Criticas = new List<Critica>();
+        public int _codigoFilial;
 
         public ResultadoCriticaPromax Construir()
         {
-            var critica = Critica.Any() ? Critica : new List<Critica>();
+            var critica = Criticas.Any() ? Criticas : new List<Critica>();
 
             return new ResultadoCriticaPromax
             {
-                data_hora_inicio = _data_hora_inicio,
-                data_hora_fim = _data_hora_fim,
-                grupo_de_critica = _grupo_de_critica,
+                data_hora_inicio = _dataHoraInicio,
+                data_hora_fim = _dataHoraFim,
+                grupo_de_critica = _grupoDeCritica,
                 status = _status,
-                Codigo_pedido = _codigo_pedido,
+                Codigo_pedido = _codigoPedido,
                 Critica = critica,
-                codigo_filial = _codigo_filial
+                codigo_filial = _codigoFilial
             };
         }
 
         public ResultadoCriticaPromaxBuilder ComDataHoraInicio(DateTime dataHoraInicio)
         {
-            _data_hora_inicio = dataHoraInicio;
+            _dataHoraInicio = dataHoraInicio;
             return this;
         }
 
         public ResultadoCriticaPromaxBuilder ComDataHoraFim(DateTime dataHoraFim)
         {
-            _data_hora_fim = dataHoraFim;
+            _dataHoraFim = dataHoraFim;
             return this;
         }
 
         public ResultadoCriticaPromaxBuilder ComGrupoCritica(string grupoCritica)
         {
-            _grupo_de_critica = grupoCritica;
+            _grupoDeCritica = grupoCritica;
             return this;
         }
 
@@ -56,32 +57,21 @@ namespace Tests.Builder
 
         public ResultadoCriticaPromaxBuilder ComCodigoPedido(int codigoPedido)
         {
-            _codigo_pedido = codigoPedido;
+            _codigoPedido = codigoPedido;
             return this;
         }
 
         public ResultadoCriticaPromaxBuilder ComCritica(Critica criticas)
         {
-            Critica.Add(criticas);
+            Criticas.Add(criticas);
             return this;
         }
 
         public ResultadoCriticaPromaxBuilder ComCodigoFilial(int codigoFilial)
         {
-            _codigo_filial = codigoFilial;
+            _codigoFilial = codigoFilial;
             return this;
         }
-    }
-
-    public class ResultadoCriticaPromax
-    {
-        public DateTime data_hora_inicio;
-        public DateTime data_hora_fim;
-        public string grupo_de_critica;
-        public int status;
-        public int Codigo_pedido;
-        public List<Critica> Critica;
-        public int codigo_filial;
     }
 }
 
