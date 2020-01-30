@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs
 {
-    public class ResultadoCriticaPromaxDto: ResultadoCriticaBaseDto
+    public class ResultadoCriticaPromaxDto : ResultadoCriticaBaseDto
     {
     }
 }

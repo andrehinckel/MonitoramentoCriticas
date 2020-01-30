@@ -1,6 +1,4 @@
 ﻿using Application.DTOs;
-using Domain.Entity;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Application.Services
@@ -11,8 +9,7 @@ namespace Application.Services
         {
         }
 
-        public List<int> ok = new List<int>();
-        public List<int> nok = new List<int>();
+        int[,] matriz = new int[10, 3];
 
         public void CriticsSum(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax)
         {
@@ -20,36 +17,39 @@ namespace Application.Services
                 && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
                 && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
             {
-                resultadoCriticaHercules.Criticas.OrderBy(d => d.NumeroCritica);
-                resultadoCriticaPromax.Criticas.OrderBy(d => d.NumeroCritica);
-
-                var j = 0;
-                var k = 0;
-
                 for (int i = 0; i < resultadoCriticaHercules.Criticas.Count(); i++)
                 {
                     if (resultadoCriticaHercules.Criticas[i].NumeroCritica == resultadoCriticaPromax.Criticas[i].NumeroCritica
                         && resultadoCriticaHercules.Criticas[i].Status == resultadoCriticaPromax.Criticas[i].Status
                         && resultadoCriticaHercules.Criticas[i].Alcada == resultadoCriticaPromax.Criticas[i].Alcada)
-
-                        j++;
+                        matriz[i, 2] = matriz[i, 2] + 1;
                     else
-                        k++;
-
+                        matriz[i, 1] = matriz[i, 1] + 1;
+                    matriz[i, 0] = resultadoCriticaHercules.Criticas[i].NumeroCritica;
                 }
-                ok.Add(j);
-                nok.Add(k);
             }
         }
 
         public int GetOKs(int codigoCritica)
         {
-            return 1;
+            var index = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                if (matriz[i, 0] == codigoCritica)
+                    index = i;
+            }
+            return matriz[index, 2];
         }
 
-        public int GetNOKs(int Codigo)
+        public int GetNOKs(int codigoCritica)
         {
-            return 1;
+            var index = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                if (matriz[i, 0] == codigoCritica)
+                    index = i;
+            }
+            return matriz[index, 1];
         }
     }
 }

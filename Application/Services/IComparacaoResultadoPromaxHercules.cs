@@ -6,6 +6,6 @@ namespace Application.Services
     {
         void CriticsSum(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax);
         int GetOKs(int codigoCritica);
-        int GetNOKs(int Codigo);
+        int GetNOKs(int codigoCritica);
     }
 }

@@ -5,7 +5,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using Tests.Builder;
 
 namespace Tests.Tests.DomainTest
 {
@@ -60,7 +59,7 @@ namespace Tests.Tests.DomainTest
                 ChaveUnica = "123456789"
             };
 
-             _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
+            _comparacaoResultadoPromaxHercules.CriticsSum(resultadoHercules, resultadoPromax);
 
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(1);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(1);
@@ -111,7 +110,7 @@ namespace Tests.Tests.DomainTest
 
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(0);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(0);
-            
+
             _comparacaoResultadoPromaxHercules.GetNOKs(12345).Should().Be(1);
             _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should().Be(1);
         }
