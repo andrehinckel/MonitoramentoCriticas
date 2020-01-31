@@ -23,7 +23,7 @@ namespace Tests.Tests.DomainTest
         {
             _criticaHerculesRepository = Substitute.For<IResultadoCriticaHerculesRepository>();
             _criticaPromaxRepository = Substitute.For<IResultadoCriticaPromaxRepository>();
-            _comparacaoResultadoPromaxHercules = new ResultadoPromaxHercules(10, _criticaHerculesRepository, _criticaPromaxRepository);
+            _comparacaoResultadoPromaxHercules = new ResultadoPromaxHercules(_criticaHerculesRepository, _criticaPromaxRepository);
         }
 
         [Test]
@@ -119,12 +119,12 @@ namespace Tests.Tests.DomainTest
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(0);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(0);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12345).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
         }
 
         [Test]
-        public void deve_retornar_listas_criticas_noks_oks_quando_promax_hercules()
+        public void deve_retornar_listas_criticas_noks_oks_promax_hercules()
         {
             //HerculesA
             var criticaHerculesA1 = new Critica()
@@ -257,20 +257,20 @@ namespace Tests.Tests.DomainTest
             _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesA, resultadoPromaxA);
             _comparacaoResultadoPromaxHercules.GetOKs(12341).Should().Be(1);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12340, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12340).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12340} no grupo de critica {resultadoHerculesA.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHerculesA.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12348).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHerculesA.GrupoCritica}");
 
             _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesB, resultadoPromaxB);
             _comparacaoResultadoPromaxHercules.GetOKs(12347).Should().Be(1);
-            _comparacaoResultadoPromaxHercules.GetNOKs(12349, resultadoHerculesB).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12349).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {12349} no grupo de critica {resultadoHerculesB.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(123411, resultadoHerculesB).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(123411).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {123411} no grupo de critica {resultadoHerculesB.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12343, resultadoHerculesB).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12343).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {12343} no grupo de critica {resultadoHerculesB.GrupoCritica}");
         }
 
@@ -344,11 +344,11 @@ namespace Tests.Tests.DomainTest
             _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesA, resultadoPromaxA);
             _comparacaoResultadoPromaxHercules.GetOKs(12341).Should().Be(1);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12340, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12340).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12340} no grupo de critica {resultadoHerculesA.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHerculesA.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHerculesA).Should()
+            _comparacaoResultadoPromaxHercules.GetNOKs(12348).Should()
                 .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHerculesA.GrupoCritica}");
         }
 
@@ -631,9 +631,9 @@ namespace Tests.Tests.DomainTest
             criticasPromaxA.Add(criticaPromaxA3);
 
             List<Critica> criticasPromaxB = new List<Critica>();
-            criticasPromaxA.Add(criticaPromaxB1);
-            criticasPromaxA.Add(criticaPromaxB2);
-            criticasPromaxA.Add(criticaPromaxB3);
+            criticasPromaxB.Add(criticaPromaxB1);
+            criticasPromaxB.Add(criticaPromaxB2);
+            criticasPromaxB.Add(criticaPromaxB3);
 
             var resultadoPromaxA = new ResultadoCriticaPromaxDto()
             {
@@ -701,8 +701,8 @@ namespace Tests.Tests.DomainTest
             criticasHerculesA.Add(criticaHerculesA2);
 
             List<Critica> criticasHerculesB = new List<Critica>();
-            criticasHerculesA.Add(criticaHerculesB1);
-            criticasHerculesA.Add(criticaHerculesB2);
+            criticasHerculesB.Add(criticaHerculesB1);
+            criticasHerculesB.Add(criticaHerculesB2);
 
             var resultadoHerculesA = new ResultadoCriticaHerculesDto()
             {
@@ -737,7 +737,7 @@ namespace Tests.Tests.DomainTest
 
             var retorno = await _comparacaoResultadoPromaxHercules.Main();
 
-            retorno.Should().HaveCount(6);
+            retorno.Should().HaveCount(4);
         }
     }
 }

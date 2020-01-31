@@ -9,16 +9,17 @@ namespace Application.Services
 {
     public class ResultadoPromaxHercules : IResultadoPromaxHercules
     {
-        int[,] matriz;
+        List<OKsDto> ListOKs = new List<OKsDto>();
+        List<NOKsDto> ListNOKs = new List<NOKsDto>();
+        List<NaoExecutadosDto> ListNaoExecutados = new List<NaoExecutadosDto>();
 
         private readonly IResultadoCriticaHerculesRepository _resultadoCriticaHercules;
         private readonly IResultadoCriticaPromaxRepository _resultadoCriticaPromax;
 
-        public ResultadoPromaxHercules(int minhaVariavel, IResultadoCriticaHerculesRepository resultadoCritica, IResultadoCriticaPromaxRepository resultadoCriticaPromax)
+        public ResultadoPromaxHercules(IResultadoCriticaHerculesRepository resultadoCritica, IResultadoCriticaPromaxRepository resultadoCriticaPromax)
         {
             _resultadoCriticaHercules = resultadoCritica;
             _resultadoCriticaPromax = resultadoCriticaPromax;
-            matriz = new int[minhaVariavel, 3];
         }
 
         public async Task<IList<ResultadoCriticaHerculesDto>> GetHercules()
@@ -31,7 +32,7 @@ namespace Application.Services
                 DataHoraFim = d.DataHoraFim,
                 ChaveUnica = d.ChaveUnica,
                 Criticas = d.Criticas,
-                GrupoCritica  = d.GrupoCritica
+                GrupoCritica = d.GrupoCritica
             }).ToList();
         }
 
@@ -54,47 +55,62 @@ namespace Application.Services
             {
                 for (int i = 0; i < resultadoCriticaPromax.Criticas.Count(); i++)
                 {
-                    resultadoCriticaHercules.CriticaNaoExecutada++;
+                    var item = new NaoExecutadosDto()
+                    {
+                        NaoExecutados = resultadoCriticaHercules.CriticaNaoExecutada++.ToString()
+                    };
+                    ListNaoExecutados.Add(item);
                 }
             }
-            else if (resultadoCriticaHercules.DataHoraInicio == resultadoCriticaPromax.DataHoraInicio
-                && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
-                && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
+            else
+            if (resultadoCriticaHercules.DataHoraInicio == resultadoCriticaPromax.DataHoraInicio
+                    && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
+                    && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
             {
                 var NotOK = resultadoCriticaPromax.Criticas.Select(x => x.NumeroCritica).Except(resultadoCriticaHercules.Criticas.Select(h => h.NumeroCritica));
                 var NotOKHercules = resultadoCriticaHercules.Criticas.Select(x => x.NumeroCritica).Except(resultadoCriticaPromax.Criticas.Select(p => p.NumeroCritica));
                 var OKs = resultadoCriticaPromax.Criticas.Select(x => x.NumeroCritica).Intersect(resultadoCriticaHercules.Criticas.Select(h => h.NumeroCritica));
 
-                var j = 0;
-
                 if (OKs.Any())
                 {
                     for (int i = 0; i < OKs.Count(); i++)
                     {
-                        matriz[i, 2] = matriz[i, 2] + 1;
-                        matriz[i, 0] = OKs.ElementAt(i);
+                        var item = new OKsDto()
+                        {
+                            OKs = 1,
+                            CodigoCritica = OKs.ElementAt(i)
+                        };
+                        ListOKs.Add(item);
                     }
                 }
 
                 if (NotOK.Any())
                 {
-                    j = OKs.Count();
                     for (int i = 0; i < NotOK.Count(); i++)
                     {
-                        matriz[j, 1] = matriz[j, 1] + 1;
-                        matriz[j, 0] = NotOK.ElementAt(i);
-                        j++;
+                        var item = new NOKsDto()
+                        {
+                            NOKs = 1,
+                            CodigoCritica = NotOK.ElementAt(i),
+                            ChaveUnica = resultadoCriticaHercules.ChaveUnica,
+                            GrupoCritica = resultadoCriticaHercules.GrupoCritica
+                        };
+                        ListNOKs.Add(item);
                     }
                 }
 
                 if (NotOKHercules.Any())
                 {
-                    j = NotOK.Count() + OKs.Count();
                     for (int i = 0; i < NotOKHercules.Count(); i++)
                     {
-                        matriz[j, 1] = matriz[j, 1] + 1;
-                        matriz[j, 0] = NotOKHercules.ElementAt(i);
-                        j++;
+                        var item = new NOKsDto()
+                        {
+                            NOKs = 1,
+                            CodigoCritica = NotOKHercules.ElementAt(i),
+                            ChaveUnica = resultadoCriticaHercules.ChaveUnica,
+                            GrupoCritica = resultadoCriticaHercules.GrupoCritica
+                        };
+                        ListNOKs.Add(item);
                     }
                 }
             }
@@ -102,12 +118,12 @@ namespace Application.Services
 
         public int GetOKs(int codigoCritica)
         {
-            for (int i = 0; i < matriz.GetLength(0); i++)
+            for (int i = 0; i < ListOKs.Count(); i++)
             {
-                if (matriz[i, 0] == codigoCritica)
-                    return matriz[i, 2];
+                if (ListOKs[i].CodigoCritica == codigoCritica)
+                    return ListOKs[i].OKs;
             }
-            throw new ArgumentException("Não houve critica para essa codigo de critica");
+            return 0;
         }
 
         public string GetNotPerformed(ResultadoCriticaHerculesDto resultadoCriticaHercules)
@@ -115,19 +131,48 @@ namespace Application.Services
             return $"{resultadoCriticaHercules.CriticaNaoExecutada} criticas não foram executadas no Hércules";
         }
 
-        public string GetNOKs(int codigoCritica, ResultadoCriticaHerculesDto resultadoCriticaHercules)
+        public string GetNOKs(int codigoCritica)
         {
-            for (int i = 0; i < matriz.GetLength(0); i++)
+            for (int i = 0; i < ListNOKs.Count(); i++)
             {
-                if (matriz[i, 0] == codigoCritica)
-                    return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} com o número da critica {matriz[i, 0]} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
+                if (ListNOKs[i].CodigoCritica == codigoCritica)
+                    return $"O NOK foi do pedido que corresponde à chave {ListNOKs[i].ChaveUnica} com o número da critica {ListNOKs[i].CodigoCritica} no grupo de critica {ListNOKs[i].GrupoCritica}";
             }
-            throw new ArgumentException("Não foi possível encontrar o código informado");
+            return "Não foi possível encontrar o código informado";
         }
 
-        Task<List<ResultadoCriticaBaseDto>> IResultadoPromaxHercules.Main()
+        public async Task<List<ResultadoCriticaPromaxHerculesDto>> Main()
         {
-            throw new NotImplementedException();
+            List<ResultadoCriticaPromaxHerculesDto> resultadoCriticaPromaxHercules = new List<ResultadoCriticaPromaxHerculesDto>();
+            var getHercules = await GetHercules();
+            var getPromax = await GetPromax();
+
+            for (int i = 0; i < getPromax.Count(); i++)
+            {
+                CompararPromaxHercules(getHercules[i], getPromax[i]);
+            }
+            for (int i = 0; i < ListNaoExecutados.Count(); i++)
+            {
+                resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()
+                {
+                    NaoExeceutados = GetNotPerformed(getHercules[i])
+                });
+            }
+            for (int i = 0; i < ListNOKs.Count(); i++)
+            {
+                resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()
+                {
+                    NOKs = GetNOKs(ListNOKs[i].CodigoCritica)
+                });
+            }
+            for (int i = 0; i < ListOKs.Count(); i++)
+            {
+                resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()
+                {
+                    OKs = 1
+                });
+            }
+            return resultadoCriticaPromaxHercules;
         }
     }
 }
