@@ -21,13 +21,13 @@ namespace Tests.Builder
 
             return new ResultadoCriticaPromax
             {
-                data_hora_inicio = _dataHoraInicio,
-                data_hora_fim = _dataHoraFim,
-                grupo_de_critica = _grupoDeCritica,
-                status = _status,
-                Codigo_pedido = _codigoPedido,
-                Critica = critica,
-                codigo_filial = _codigoFilial
+                DataHoraInicio = _dataHoraInicio,
+                DataHoraFim = _dataHoraFim,
+                GrupoCritica = _grupoDeCritica,
+                Status = _status,
+                CodigoPedido = _codigoPedido,
+                Criticas = critica,
+                CodigoFilial = _codigoFilial
             };
         }
 

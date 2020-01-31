@@ -5,12 +5,13 @@ namespace Domain.Entity
 {
     public abstract class ResultadoCriticaBase
     {
-        public DateTime data_hora_inicio;
-        public DateTime data_hora_fim;
-        public string grupo_de_critica;
-        public int status;
-        public int Codigo_pedido;
-        public List<Critica> Critica;
-        public int codigo_filial;
+        public DateTime DataHoraInicio;
+        public DateTime DataHoraFim;
+        public string GrupoCritica;
+        public int Status;
+        public int CodigoPedido;
+        public string ChaveUnica;
+        public List<Critica> Criticas;
+        public int CodigoFilial;
     }
 }

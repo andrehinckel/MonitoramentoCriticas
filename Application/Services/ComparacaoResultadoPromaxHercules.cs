@@ -1,6 +1,9 @@
 ﻿using Application.DTOs;
+using Infra.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -8,17 +11,52 @@ namespace Application.Services
     {
         int[,] matriz;
 
+        private readonly IResultadoCriticaHerculesRepository _resultadoCriticaHercules;
+        private readonly IResultadoCriticaPromaxRepository _resultadoCriticaPromax;
 
-        public ResultadoPromaxHercules(int minhaVariavel)
+        public ResultadoPromaxHercules(int minhaVariavel, IResultadoCriticaHerculesRepository resultadoCritica, IResultadoCriticaPromaxRepository resultadoCriticaPromax)
         {
+            _resultadoCriticaHercules = resultadoCritica;
+            _resultadoCriticaPromax = resultadoCriticaPromax;
             matriz = new int[minhaVariavel, 3];
         }
 
-        //recebe a lista do promax e do hercules e para cada um dos dois, chama o compararpromaxhercules apos filtrar por data
+        public async Task<IList<ResultadoCriticaHerculesDto>> GetHercules()
+        {
+            var resultadoHercules = await _resultadoCriticaHercules.ObterTodasAsCriticasHercules();
+
+            return resultadoHercules.Select(d => new ResultadoCriticaHerculesDto
+            {
+                DataHoraInicio = d.DataHoraInicio,
+                DataHoraFim = d.DataHoraFim,
+                ChaveUnica = d.ChaveUnica,
+                Criticas = d.Criticas,
+                GrupoCritica  = d.GrupoCritica
+            }).ToList();
+        }
+
+        public async Task<IList<ResultadoCriticaPromaxDto>> GetPromax()
+        {
+            var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();
+
+            return resultadoHercules.Select(d => new ResultadoCriticaPromaxDto
+            {
+                DataHoraInicio = d.DataHoraFim,
+                DataHoraFim = d.DataHoraFim,
+                ChaveUnica = d.ChaveUnica,
+                Criticas = d.Criticas
+            }).ToList();
+        }
+
         public void CompararPromaxHercules(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax)
         {
             if (!resultadoCriticaHercules.Criticas.Any())
-                resultadoCriticaHercules.CriticaNaoExecutada++;
+            {
+                for (int i = 0; i < resultadoCriticaPromax.Criticas.Count(); i++)
+                {
+                    resultadoCriticaHercules.CriticaNaoExecutada++;
+                }
+            }
             else if (resultadoCriticaHercules.DataHoraInicio == resultadoCriticaPromax.DataHoraInicio
                 && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
                 && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
@@ -85,6 +123,11 @@ namespace Application.Services
                     return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} com o número da critica {matriz[i, 0]} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
             }
             throw new ArgumentException("Não foi possível encontrar o código informado");
+        }
+
+        Task<List<ResultadoCriticaBaseDto>> IResultadoPromaxHercules.Main()
+        {
+            throw new NotImplementedException();
         }
     }
 }

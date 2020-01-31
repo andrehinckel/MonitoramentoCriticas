@@ -2,20 +2,28 @@
 using Application.Services;
 using Domain.Entity;
 using FluentAssertions;
+using Infra.Repositories;
+using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Tests.Builder;
 
 namespace Tests.Tests.DomainTest
 {
     public class Teste
     {
         private readonly IResultadoPromaxHercules _comparacaoResultadoPromaxHercules;
+        private readonly IResultadoCriticaHerculesRepository _criticaHerculesRepository;
+        private readonly IResultadoCriticaPromaxRepository _criticaPromaxRepository;
 
         public Teste()
         {
-            _comparacaoResultadoPromaxHercules = new ResultadoPromaxHercules(10);
-
+            _criticaHerculesRepository = Substitute.For<IResultadoCriticaHerculesRepository>();
+            _criticaPromaxRepository = Substitute.For<IResultadoCriticaPromaxRepository>();
+            _comparacaoResultadoPromaxHercules = new ResultadoPromaxHercules(10, _criticaHerculesRepository, _criticaPromaxRepository);
         }
 
         [Test]
@@ -116,79 +124,232 @@ namespace Tests.Tests.DomainTest
         }
 
         [Test]
-        public void deve_retornar_criticas_noks_oks_quando_promax_hercules()
+        public void deve_retornar_listas_criticas_noks_oks_quando_promax_hercules()
         {
-            //Hercules
-            var critica1 = new Critica()
+            //HerculesA
+            var criticaHerculesA1 = new Critica()
             {
                 Alcada = 2,
                 Status = 5,
-                NumeroCritica = 12345
+                NumeroCritica = 12340
             };
 
-            var critica4 = new Critica()
+            var criticaHerculesA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            //HerculesB
+            var criticaHerculesB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12343
+            };
+
+            var criticaHerculesB2 = new Critica()
             {
                 Alcada = 2,
                 Status = 5,
                 NumeroCritica = 12347
             };
 
-            //Promax
-            var critica2 = new Critica()
+            //PromaxA
+            var criticaPromaxA1 = new Critica()
             {
                 Alcada = 2,
                 Status = 5,
                 NumeroCritica = 12346
             };
 
-            var critica3 = new Critica()
+            var criticaPromaxA2 = new Critica()
             {
                 Alcada = 2,
                 Status = 5,
-                NumeroCritica = 12347
+                NumeroCritica = 12341
             };
 
-            var critica5 = new Critica()
+            var criticaPromaxA3 = new Critica()
             {
                 Alcada = 2,
                 Status = 5,
                 NumeroCritica = 12348
             };
 
-            List<Critica> criticas = new List<Critica>();
-            criticas.Add(critica1);
-            criticas.Add(critica4);
+            //PromaxB
+            var criticaPromaxB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12349
+            };
 
-            List<Critica> criticas2 = new List<Critica>();
-            criticas2.Add(critica2);
-            criticas2.Add(critica3);
-            criticas2.Add(critica5);
+            var criticaPromaxB2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
 
-            var resultadoHercules = new ResultadoCriticaHerculesDto()
+            var criticaPromaxB3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 123411
+            };
+
+            List<Critica> criticasHerculesA = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesA1);
+            criticasHerculesA.Add(criticaHerculesA2);
+
+            List<Critica> criticasHerculesB = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesB1);
+            criticasHerculesA.Add(criticaHerculesB2);
+
+            List<Critica> criticasPromaxA = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxA1);
+            criticasPromaxA.Add(criticaPromaxA2);
+            criticasPromaxA.Add(criticaPromaxA3);
+
+            List<Critica> criticasPromaxB = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxB1);
+            criticasPromaxA.Add(criticaPromaxB2);
+            criticasPromaxA.Add(criticaPromaxB3);
+
+            var resultadoHerculesA = new ResultadoCriticaHerculesDto()
             {
                 DataHoraInicio = new DateTime(2020 - 01 - 30),
                 DataHoraFim = new DateTime(2020 - 01 - 30),
                 GrupoCritica = "2",
-                Criticas = criticas,
-                ChaveUnica = "123456789"
+                Criticas = criticasHerculesA,
+                ChaveUnica = "1234567890"
             };
 
-            var resultadoPromax = new ResultadoCriticaPromaxDto()
+            var resultadoHerculesB = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                GrupoCritica = "1",
+                Criticas = criticasHerculesB,
+                ChaveUnica = "1234567891"
+            };
+
+            var resultadoPromaxA = new ResultadoCriticaPromaxDto()
             {
                 DataHoraInicio = new DateTime(2020 - 01 - 30),
                 DataHoraFim = new DateTime(2020 - 01 - 30),
                 GrupoCritica = "2",
-                Criticas = criticas2,
-                ChaveUnica = "123456789"
+                Criticas = criticasPromaxA,
+                ChaveUnica = "1234567890"
             };
 
-            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
+            var resultadoPromaxB = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                GrupoCritica = "1",
+                Criticas = criticasPromaxB,
+                ChaveUnica = "1234567891"
+            };
 
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesA, resultadoPromaxA);
+            _comparacaoResultadoPromaxHercules.GetOKs(12341).Should().Be(1);
+
+            _comparacaoResultadoPromaxHercules.GetNOKs(12340, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12340} no grupo de critica {resultadoHerculesA.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHerculesA.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHerculesA.GrupoCritica}");
+
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesB, resultadoPromaxB);
             _comparacaoResultadoPromaxHercules.GetOKs(12347).Should().Be(1);
+            _comparacaoResultadoPromaxHercules.GetNOKs(12349, resultadoHerculesB).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {12349} no grupo de critica {resultadoHerculesB.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(123411, resultadoHerculesB).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {123411} no grupo de critica {resultadoHerculesB.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12343, resultadoHerculesB).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesB.ChaveUnica} com o número da critica {12343} no grupo de critica {resultadoHerculesB.GrupoCritica}");
+        }
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
-            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHercules.GrupoCritica}");
+        [Test]
+        public void deve_retornar_criticas_noks_oks_quando_promax_hercules()
+        {
+            //HerculesA
+            var criticaHerculesA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12340
+            };
+
+            var criticaHerculesA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            //PromaxA
+            var criticaPromaxA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            var criticaPromaxA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            var criticaPromaxA3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12348
+            };
+
+            List<Critica> criticasHerculesA = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesA1);
+            criticasHerculesA.Add(criticaHerculesA2);
+
+            List<Critica> criticasPromaxA = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxA1);
+            criticasPromaxA.Add(criticaPromaxA2);
+            criticasPromaxA.Add(criticaPromaxA3);
+
+            var resultadoHerculesA = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticasHerculesA,
+                ChaveUnica = "1234567890"
+            };
+
+            var resultadoPromaxA = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticasPromaxA,
+                ChaveUnica = "1234567890"
+            };
+
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHerculesA, resultadoPromaxA);
+            _comparacaoResultadoPromaxHercules.GetOKs(12341).Should().Be(1);
+
+            _comparacaoResultadoPromaxHercules.GetNOKs(12340, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12340} no grupo de critica {resultadoHerculesA.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHerculesA.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHerculesA).Should()
+                .Be($"O NOK foi do pedido que corresponde à chave {resultadoHerculesA.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHerculesA.GrupoCritica}");
         }
 
         [Test]
@@ -217,7 +378,7 @@ namespace Tests.Tests.DomainTest
             };
 
             List<Critica> criticas = new List<Critica>();
-          
+
             List<Critica> criticas2 = new List<Critica>();
             criticas2.Add(critica2);
             criticas2.Add(critica3);
@@ -244,7 +405,339 @@ namespace Tests.Tests.DomainTest
 
             _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
 
-            _comparacaoResultadoPromaxHercules.GetNotPerformed(resultadoHercules).Should().Be($"{2} criticas não foram executadas no Hércules");
+            _comparacaoResultadoPromaxHercules.GetNotPerformed(resultadoHercules).Should().Be($"{3} criticas não foram executadas no Hércules");
+        }
+
+        [Test]
+        public async Task deve_retornar_listas_de_criticas_promax_repository()
+        {
+            //PromaxA
+            var criticaPromaxA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            var criticaPromaxA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            var criticaPromaxA3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12348
+            };
+
+            //PromaxB
+            var criticaPromaxB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12349
+            };
+
+            var criticaPromaxB2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
+
+            var criticaPromaxB3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 123411
+            };
+
+            List<Critica> criticasPromaxA = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxA1);
+            criticasPromaxA.Add(criticaPromaxA2);
+            criticasPromaxA.Add(criticaPromaxA3);
+
+            List<Critica> criticasPromaxB = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxB1);
+            criticasPromaxA.Add(criticaPromaxB2);
+            criticasPromaxA.Add(criticaPromaxB3);
+
+            var resultadoPromaxA = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                Criticas = criticasPromaxA,
+                ChaveUnica = "1234567890",
+                GrupoCritica = "abc"
+            };
+
+            var resultadoPromaxB = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                Criticas = criticasPromaxB,
+                ChaveUnica = "1234567891",
+                GrupoCritica = "abc"
+            };
+
+            List<ResultadoCriticaPromaxDto> resultadoRepositoryPromax = new List<ResultadoCriticaPromaxDto>();
+            resultadoRepositoryPromax.Add(resultadoPromaxA);
+            resultadoRepositoryPromax.Add(resultadoPromaxB);
+
+            _criticaPromaxRepository.ObterTodasAsCriticasPromax().Returns(resultadoRepositoryPromax.Select(x => new ResultadoCriticaPromax
+            {
+                ChaveUnica = x.ChaveUnica,
+                Criticas = x.Criticas,
+                DataHoraFim = x.DataHoraFim,
+                DataHoraInicio = x.DataHoraInicio,
+                GrupoCritica = x.GrupoCritica
+            }).ToList());
+
+            var result = await _comparacaoResultadoPromaxHercules.GetPromax();
+
+            result.Should().HaveCount(2);
+        }
+
+        [Test]
+        public async Task deve_retornar_listas_de_criticas_hercules_repository()
+        {
+            //HerculesA
+            var criticaHerculesA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12340
+            };
+
+            var criticaHerculesA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            //HerculesB
+            var criticaHerculesB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12343
+            };
+
+            var criticaHerculesB2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
+
+            List<Critica> criticasHerculesA = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesA1);
+            criticasHerculesA.Add(criticaHerculesA2);
+
+            List<Critica> criticasHerculesB = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesB1);
+            criticasHerculesA.Add(criticaHerculesB2);
+
+            var resultadoHerculesA = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticasHerculesA,
+                ChaveUnica = "1234567890"
+            };
+
+            var resultadoHerculesB = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                GrupoCritica = "1",
+                Criticas = criticasHerculesB,
+                ChaveUnica = "1234567891"
+            };
+
+            List<ResultadoCriticaHerculesDto> resultadoRepositoryHercules = new List<ResultadoCriticaHerculesDto>();
+            resultadoRepositoryHercules.Add(resultadoHerculesA);
+            resultadoRepositoryHercules.Add(resultadoHerculesB);
+
+            _criticaHerculesRepository.ObterTodasAsCriticasHercules().Returns(resultadoRepositoryHercules.Select(x => new ResultadoCriticaHercules
+            {
+                ChaveUnica = x.ChaveUnica,
+                Criticas = x.Criticas,
+                DataHoraFim = x.DataHoraFim,
+                DataHoraInicio = x.DataHoraInicio,
+                GrupoCritica = x.GrupoCritica
+            }).ToList());
+
+            var result = await _comparacaoResultadoPromaxHercules.GetHercules();
+
+            result.Should().HaveCount(2);
+        }
+
+        [Test]
+        public async Task deve_retornar_ok_para_cada_item_das_listas_dos_repositorios_hercules_promax()
+        {
+            //PromaxA
+            var criticaPromaxA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            var criticaPromaxA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            var criticaPromaxA3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12348
+            };
+
+            //PromaxB
+            var criticaPromaxB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12349
+            };
+
+            var criticaPromaxB2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
+
+            var criticaPromaxB3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 123411
+            };
+
+            List<Critica> criticasPromaxA = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxA1);
+            criticasPromaxA.Add(criticaPromaxA2);
+            criticasPromaxA.Add(criticaPromaxA3);
+
+            List<Critica> criticasPromaxB = new List<Critica>();
+            criticasPromaxA.Add(criticaPromaxB1);
+            criticasPromaxA.Add(criticaPromaxB2);
+            criticasPromaxA.Add(criticaPromaxB3);
+
+            var resultadoPromaxA = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                Criticas = criticasPromaxA,
+                ChaveUnica = "1234567890",
+                GrupoCritica = "abc"
+            };
+
+            var resultadoPromaxB = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                Criticas = criticasPromaxB,
+                ChaveUnica = "1234567891",
+                GrupoCritica = "abc"
+            };
+
+            List<ResultadoCriticaPromaxDto> resultadoRepositoryPromax = new List<ResultadoCriticaPromaxDto>();
+            resultadoRepositoryPromax.Add(resultadoPromaxA);
+            resultadoRepositoryPromax.Add(resultadoPromaxB);
+
+            _criticaPromaxRepository.ObterTodasAsCriticasPromax().Returns(resultadoRepositoryPromax.Select(x => new ResultadoCriticaPromax
+            {
+                ChaveUnica = x.ChaveUnica,
+                Criticas = x.Criticas,
+                DataHoraFim = x.DataHoraFim,
+                DataHoraInicio = x.DataHoraInicio,
+                GrupoCritica = x.GrupoCritica
+            }).ToList());
+
+            //HerculesA
+            var criticaHerculesA1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12340
+            };
+
+            var criticaHerculesA2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12341
+            };
+
+            //HerculesB
+            var criticaHerculesB1 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12343
+            };
+
+            var criticaHerculesB2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
+
+            List<Critica> criticasHerculesA = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesA1);
+            criticasHerculesA.Add(criticaHerculesA2);
+
+            List<Critica> criticasHerculesB = new List<Critica>();
+            criticasHerculesA.Add(criticaHerculesB1);
+            criticasHerculesA.Add(criticaHerculesB2);
+
+            var resultadoHerculesA = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticasHerculesA,
+                ChaveUnica = "1234567890"
+            };
+
+            var resultadoHerculesB = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 31),
+                DataHoraFim = new DateTime(2020 - 02 - 01),
+                GrupoCritica = "1",
+                Criticas = criticasHerculesB,
+                ChaveUnica = "1234567891"
+            };
+
+            List<ResultadoCriticaHerculesDto> resultadoRepositoryHercules = new List<ResultadoCriticaHerculesDto>();
+            resultadoRepositoryHercules.Add(resultadoHerculesA);
+            resultadoRepositoryHercules.Add(resultadoHerculesB);
+
+            _criticaHerculesRepository.ObterTodasAsCriticasHercules().Returns(resultadoRepositoryHercules.Select(x => new ResultadoCriticaHercules
+            {
+                ChaveUnica = x.ChaveUnica,
+                Criticas = x.Criticas,
+                DataHoraFim = x.DataHoraFim,
+                DataHoraInicio = x.DataHoraInicio,
+                GrupoCritica = x.GrupoCritica
+            }).ToList());
+
+            var retorno = await _comparacaoResultadoPromaxHercules.Main();
+
+            retorno.Should().HaveCount(6);
         }
     }
 }

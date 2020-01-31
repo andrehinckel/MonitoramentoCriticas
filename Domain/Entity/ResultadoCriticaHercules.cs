@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entity
 {
-    public class ResultadoCriticaHercules : ResultadoCriticaBase
+    public class ResultadoCriticaHercules : ResultadoCriticaBase, IEntidade
     {
     }
 }
