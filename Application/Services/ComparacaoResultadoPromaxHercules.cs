@@ -17,7 +17,9 @@ namespace Application.Services
         //recebe a lista do promax e do hercules e para cada um dos dois, chama o compararpromaxhercules apos filtrar por data
         public void CompararPromaxHercules(ResultadoCriticaHerculesDto resultadoCriticaHercules, ResultadoCriticaPromaxDto resultadoCriticaPromax)
         {
-            if (resultadoCriticaHercules.DataHoraInicio == resultadoCriticaPromax.DataHoraInicio
+            if (!resultadoCriticaHercules.Criticas.Any())
+                resultadoCriticaHercules.CriticaNaoExecutada++;
+            else if (resultadoCriticaHercules.DataHoraInicio == resultadoCriticaPromax.DataHoraInicio
                 && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
                 && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
             {
@@ -36,10 +38,9 @@ namespace Application.Services
                     }
                 }
 
-                j = OKs.Count();
-
                 if (NotOK.Any())
                 {
+                    j = OKs.Count();
                     for (int i = 0; i < NotOK.Count(); i++)
                     {
                         matriz[j, 1] = matriz[j, 1] + 1;
@@ -48,10 +49,9 @@ namespace Application.Services
                     }
                 }
 
-                j = NotOK.Count() + OKs.Count();
-
                 if (NotOKHercules.Any())
                 {
+                    j = NotOK.Count() + OKs.Count();
                     for (int i = 0; i < NotOKHercules.Count(); i++)
                     {
                         matriz[j, 1] = matriz[j, 1] + 1;
@@ -74,7 +74,7 @@ namespace Application.Services
 
         public string GetNotPerformed(ResultadoCriticaHerculesDto resultadoCriticaHercules)
         {
-            return $"{resultadoCriticaHercules.CriticaNaoExucutada} criticas não foram executadas no Hércules";
+            return $"{resultadoCriticaHercules.CriticaNaoExecutada} criticas não foram executadas no Hércules";
         }
 
         public string GetNOKs(int codigoCritica, ResultadoCriticaHerculesDto resultadoCriticaHercules)
@@ -82,7 +82,7 @@ namespace Application.Services
             for (int i = 0; i < matriz.GetLength(0); i++)
             {
                 if (matriz[i, 0] == codigoCritica)
-                    return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} com o número da critica {matriz[i,0]} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
+                    return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} com o número da critica {matriz[i, 0]} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
             }
             throw new ArgumentException("Não foi possível encontrar o código informado");
         }

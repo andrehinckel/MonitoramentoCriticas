@@ -2,6 +2,6 @@
 {
     public class ResultadoCriticaHerculesDto : ResultadoCriticaBaseDto
     {
-        public int CriticaNaoExucutada { get; set; }
+        public int CriticaNaoExecutada { get; set; }
     }
 }

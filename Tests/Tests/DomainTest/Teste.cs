@@ -18,7 +18,6 @@ namespace Tests.Tests.DomainTest
 
         }
 
-        //deve comparar os resultados do teste
         [Test]
         public void deve_retornar_critics_ok()
         {
@@ -65,8 +64,9 @@ namespace Tests.Tests.DomainTest
         }
 
         [Test]
-        public void deve_retornar_critics_nok()
+        public void deve_retornar_critics_nok_quando_promax_e_hercules_sao_diferentes()
         {
+            //hercules
             var critica1 = new Critica()
             {
                 Alcada = 2,
@@ -74,6 +74,7 @@ namespace Tests.Tests.DomainTest
                 NumeroCritica = 12345
             };
 
+            //promax
             var critica2 = new Critica()
             {
                 Alcada = 2,
@@ -110,11 +111,12 @@ namespace Tests.Tests.DomainTest
             _comparacaoResultadoPromaxHercules.GetOKs(12345).Should().Be(0);
             _comparacaoResultadoPromaxHercules.GetOKs(12346).Should().Be(0);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");          
-            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");          
+            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
         }
+
         [Test]
-        public void deve_retornar_criticas_nao_execeutadas()
+        public void deve_retornar_criticas_noks_oks_quando_promax_hercules()
         {
             //Hercules
             var critica1 = new Critica()
@@ -182,12 +184,67 @@ namespace Tests.Tests.DomainTest
 
             _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
 
-            _comparacaoResultadoPromaxHercules.GetNotPerformed(resultadoHercules).Should().Be($"{resultadoHercules.CriticaNaoExucutada} criticas não foram executadas no Hércules");
-
             _comparacaoResultadoPromaxHercules.GetOKs(12347).Should().Be(1);
 
-            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12345, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12346, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
+            _comparacaoResultadoPromaxHercules.GetNOKs(12348, resultadoHercules).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12348} no grupo de critica {resultadoHercules.GrupoCritica}");
+        }
 
+        [Test]
+        public void deve_retornar_critica_nao_executada_()
+        {
+            //Promax
+            var critica2 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12346
+            };
+
+            var critica3 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12347
+            };
+
+            var critica5 = new Critica()
+            {
+                Alcada = 2,
+                Status = 5,
+                NumeroCritica = 12348
+            };
+
+            List<Critica> criticas = new List<Critica>();
+          
+            List<Critica> criticas2 = new List<Critica>();
+            criticas2.Add(critica2);
+            criticas2.Add(critica3);
+            criticas2.Add(critica5);
+
+            var resultadoHercules = new ResultadoCriticaHerculesDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas,
+                ChaveUnica = "123456789",
+                CriticaNaoExecutada = 0
+            };
+
+            var resultadoPromax = new ResultadoCriticaPromaxDto()
+            {
+                DataHoraInicio = new DateTime(2020 - 01 - 30),
+                DataHoraFim = new DateTime(2020 - 01 - 30),
+                GrupoCritica = "2",
+                Criticas = criticas2,
+                ChaveUnica = "123456789"
+            };
+
+            _comparacaoResultadoPromaxHercules.CompararPromaxHercules(resultadoHercules, resultadoPromax);
+
+            _comparacaoResultadoPromaxHercules.GetNotPerformed(resultadoHercules).Should().Be($"{2} criticas não foram executadas no Hércules");
         }
     }
 }
