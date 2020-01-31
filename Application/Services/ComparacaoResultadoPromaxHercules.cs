@@ -21,26 +21,43 @@ namespace Application.Services
                 && resultadoCriticaHercules.DataHoraFim == resultadoCriticaPromax.DataHoraFim
                 && resultadoCriticaHercules.ChaveUnica == resultadoCriticaPromax.ChaveUnica)
             {
-                for (int i = 0; i < resultadoCriticaHercules.Criticas.Count(); i++)
+                var NotOK = resultadoCriticaPromax.Criticas.Select(x => x.NumeroCritica).Except(resultadoCriticaHercules.Criticas.Select(h => h.NumeroCritica));
+                var NotOKHercules = resultadoCriticaHercules.Criticas.Select(x => x.NumeroCritica).Except(resultadoCriticaPromax.Criticas.Select(p => p.NumeroCritica));
+                var OKs = resultadoCriticaPromax.Criticas.Select(x => x.NumeroCritica).Intersect(resultadoCriticaHercules.Criticas.Select(h => h.NumeroCritica));
+
+                var j = 0;
+
+                if (OKs.Any())
                 {
-                    if (resultadoCriticaHercules.Criticas[i].NumeroCritica == resultadoCriticaPromax.Criticas[i].NumeroCritica
-                        && resultadoCriticaHercules.Criticas[i].Status == resultadoCriticaPromax.Criticas[i].Status
-                        && resultadoCriticaHercules.Criticas[i].Alcada == resultadoCriticaPromax.Criticas[i].Alcada)
+                    for (int i = 0; i < OKs.Count(); i++)
+                    {
                         matriz[i, 2] = matriz[i, 2] + 1;
-                    else
-                        matriz[i, 1] = matriz[i, 1] + 1;
-                    matriz[i, 0] = resultadoCriticaHercules.Criticas[i].NumeroCritica;
+                        matriz[i, 0] = OKs.ElementAt(i);
+                    }
                 }
 
-                for (int i = 0; i < resultadoCriticaPromax.Criticas.Count(); i++)
+                j = OKs.Count();
+
+                if (NotOK.Any())
                 {
-                    if (resultadoCriticaHercules.Criticas[i].NumeroCritica == resultadoCriticaPromax.Criticas[i].NumeroCritica
-                        && resultadoCriticaHercules.Criticas[i].Status == resultadoCriticaPromax.Criticas[i].Status
-                        && resultadoCriticaHercules.Criticas[i].Alcada == resultadoCriticaPromax.Criticas[i].Alcada)
-                        matriz[i, 2] = matriz[i, 2] + 1;
-                    else
-                        matriz[i, 1] = matriz[i, 1] + 1;
-                    matriz[i, 0] = resultadoCriticaPromax.Criticas[i].NumeroCritica;
+                    for (int i = 0; i < NotOK.Count(); i++)
+                    {
+                        matriz[j, 1] = matriz[j, 1] + 1;
+                        matriz[j, 0] = NotOK.ElementAt(i);
+                        j++;
+                    }
+                }
+
+                j = NotOK.Count() + OKs.Count();
+
+                if (NotOKHercules.Any())
+                {
+                    for (int i = 0; i < NotOKHercules.Count(); i++)
+                    {
+                        matriz[j, 1] = matriz[j, 1] + 1;
+                        matriz[j, 0] = NotOKHercules.ElementAt(i);
+                        j++;
+                    }
                 }
             }
         }
@@ -52,15 +69,20 @@ namespace Application.Services
                 if (matriz[i, 0] == codigoCritica)
                     return matriz[i, 2];
             }
-            throw new ArgumentException("Não foi possível encontrar o código informado");
+            throw new ArgumentException("Não houve critica para essa codigo de critica");
+        }
+
+        public string GetNotPerformed(ResultadoCriticaHerculesDto resultadoCriticaHercules)
+        {
+            return $"{resultadoCriticaHercules.CriticaNaoExucutada} criticas não foram executadas no Hércules";
         }
 
         public string GetNOKs(int codigoCritica, ResultadoCriticaHerculesDto resultadoCriticaHercules)
         {
             for (int i = 0; i < matriz.GetLength(0); i++)
             {
-                if (matriz[i, 0] == codigoCritica && resultadoCriticaHercules.Criticas[i].NumeroCritica == codigoCritica)
-                    return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
+                if (matriz[i, 0] == codigoCritica)
+                    return $"O NOK foi do pedido que corresponde à chave {resultadoCriticaHercules.ChaveUnica} com o número da critica {matriz[i,0]} no grupo de critica {resultadoCriticaHercules.GrupoCritica}";
             }
             throw new ArgumentException("Não foi possível encontrar o código informado");
         }
