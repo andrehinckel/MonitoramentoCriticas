@@ -151,6 +151,7 @@ namespace Application.Services
             {
                 CompararPromaxHercules(getHercules[i], getPromax[i]);
             }
+
             for (int i = 0; i < ListNaoExecutados.Count(); i++)
             {
                 resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()
@@ -158,6 +159,7 @@ namespace Application.Services
                     NaoExeceutados = GetNotPerformed(getHercules[i])
                 });
             }
+
             for (int i = 0; i < ListNOKs.Count(); i++)
             {
                 resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()
@@ -165,6 +167,7 @@ namespace Application.Services
                     NOKs = GetNOKs(ListNOKs[i].CodigoCritica)
                 });
             }
+
             for (int i = 0; i < ListOKs.Count(); i++)
             {
                 resultadoCriticaPromaxHercules.Add(new ResultadoCriticaPromaxHerculesDto()

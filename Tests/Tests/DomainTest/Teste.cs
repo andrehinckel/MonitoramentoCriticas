@@ -205,8 +205,8 @@ namespace Tests.Tests.DomainTest
             criticasHerculesA.Add(criticaHerculesA2);
 
             List<Critica> criticasHerculesB = new List<Critica>();
-            criticasHerculesA.Add(criticaHerculesB1);
-            criticasHerculesA.Add(criticaHerculesB2);
+            criticasHerculesB.Add(criticaHerculesB1);
+            criticasHerculesB.Add(criticaHerculesB2);
 
             List<Critica> criticasPromaxA = new List<Critica>();
             criticasPromaxA.Add(criticaPromaxA1);
@@ -214,9 +214,9 @@ namespace Tests.Tests.DomainTest
             criticasPromaxA.Add(criticaPromaxA3);
 
             List<Critica> criticasPromaxB = new List<Critica>();
-            criticasPromaxA.Add(criticaPromaxB1);
-            criticasPromaxA.Add(criticaPromaxB2);
-            criticasPromaxA.Add(criticaPromaxB3);
+            criticasPromaxB.Add(criticaPromaxB1);
+            criticasPromaxB.Add(criticaPromaxB2);
+            criticasPromaxB.Add(criticaPromaxB3);
 
             var resultadoHerculesA = new ResultadoCriticaHerculesDto()
             {
