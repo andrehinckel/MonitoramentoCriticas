@@ -143,7 +143,7 @@ namespace Application.Services
                             NOKs = 1,
                             CodigoCritica = NotOK.ElementAt(i),
                             ChaveUnica = resultadoCriticaHercules.ChaveUnica,
-                            GrupoCritica = resultadoCriticaHercules.GrupoCritica
+                            GrupoCritica = resultadoCriticaHercules.GrupoCritica,
                         };
                         ListNOKs.Add(item);
                     }
@@ -186,7 +186,7 @@ namespace Application.Services
             for (int i = 0; i < ListNOKs.Count(); i++)
             {
                 if (ListNOKs[i].CodigoCritica == codigoCritica)
-                    return $"O NOK foi do pedido que corresponde à chave {ListNOKs[i].ChaveUnica} com o número da critica {ListNOKs[i].CodigoCritica} no grupo de critica {ListNOKs[i].GrupoCritica}";
+                    return $"NOK foi do pedido que corresponde à chave {ListNOKs[i].ChaveUnica} com o número da critica {ListNOKs[i].CodigoCritica} no grupo de critica {ListNOKs[i].GrupoCritica}";
             }
             return "Não foi possível encontrar o código informado";
         }

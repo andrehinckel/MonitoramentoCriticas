@@ -15,11 +15,19 @@ namespace MonitoramentoCriticas
             var service = new ResultadoPromaxHercules(_resultadoCriticaHercules, _resultadoCriticaPromax);
 
             var teste = await service.Main();
+            int oks = 0;
 
             foreach (var item in teste)
             {
-                Console.WriteLine($"OKs {item.OKs} \n NOKs {item.NOKs} \n Não Executados {item.NaoExeceutados}");
+                if (item.OKs != 0)
+                    oks++;
+                else if (item.NaoExeceutados != null)
+                    Console.WriteLine($"Não Executados: {item.NaoExeceutados}");
+                else
+                    Console.WriteLine($"{item.NOKs}");
+
             }
+            Console.WriteLine($"Quantidade Total de OKs: {oks}");
         }
     }
 }
