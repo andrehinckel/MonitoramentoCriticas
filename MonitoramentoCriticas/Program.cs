@@ -1,8 +1,6 @@
-﻿using Application.DTOs;
-using Application.Services;
+﻿using Application.Services;
 using Infra.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MonitoramentoCriticas
@@ -20,7 +18,7 @@ namespace MonitoramentoCriticas
 
             foreach (var item in teste)
             {
-                Console.WriteLine($"{item}");
+                Console.WriteLine($"OKs {item.OKs} \n NOKs {item.NOKs} \n Não Executados {item.NaoExeceutados}");
             }
         }
     }

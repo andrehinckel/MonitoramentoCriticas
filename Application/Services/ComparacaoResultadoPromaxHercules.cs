@@ -60,7 +60,7 @@ namespace Application.Services
 
         public async Task<IList<ResultadoCriticaPromaxDto>> GetPromax()
         {
-            List<Critica> criticas = new List<Critica>();
+           List<Critica> criticas = new List<Critica>();
             criticas.Add(new Critica()
             {
                 Alcada = 1,
@@ -84,10 +84,11 @@ namespace Application.Services
             resultadoCriticaPromax.DataHoraInicio = new DateTime(2020 / 02 / 03);
             resultadoCriticaPromax.GrupoCritica = "Preco";
             resultadoCriticaPromax.Status = 5;
-            //var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();
 
             List<ResultadoCriticaPromax> listaPromax = new List<ResultadoCriticaPromax>();
             listaPromax.Add(resultadoCriticaPromax);
+
+            //var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();
 
             return listaPromax.Select(d => new ResultadoCriticaPromaxDto
             {
