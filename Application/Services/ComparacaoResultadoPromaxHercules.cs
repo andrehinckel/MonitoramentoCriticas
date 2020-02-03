@@ -34,12 +34,12 @@ namespace Application.Services
             });
 
             ResultadoCriticaHercules resultadoCriticaHercules = new ResultadoCriticaHercules();
-            resultadoCriticaHercules.ChaveUnica = "252515";
+            resultadoCriticaHercules.ChaveUnica = "2";
             resultadoCriticaHercules.CodigoFilial = 1;
             resultadoCriticaHercules.CodigoPedido = 5;
             resultadoCriticaHercules.Criticas = criticas;
-            resultadoCriticaHercules.DataHoraFim = new DateTime(03 - 02 - 2020);
-            resultadoCriticaHercules.DataHoraInicio = new DateTime(03 - 02 - 2020);
+            resultadoCriticaHercules.DataHoraFim = new DateTime(2020 / 02 / 03);
+            resultadoCriticaHercules.DataHoraInicio = new DateTime(2020 / 02 / 03);
             resultadoCriticaHercules.GrupoCritica = "Preco";
             resultadoCriticaHercules.Status = 5;
 
@@ -67,19 +67,21 @@ namespace Application.Services
                 NumeroCritica = 1999,
                 Status = 2
             });
+
             criticas.Add(new Critica()
             {
                 Alcada = 1,
                 NumeroCritica = 1990,
                 Status = 2
             });
+
             ResultadoCriticaPromax resultadoCriticaPromax = new ResultadoCriticaPromax();
             resultadoCriticaPromax.ChaveUnica = "2";
             resultadoCriticaPromax.CodigoFilial = 1;
             resultadoCriticaPromax.CodigoPedido = 5;
             resultadoCriticaPromax.Criticas = criticas;
-            resultadoCriticaPromax.DataHoraFim = new DateTime(03 - 02 - 2020);
-            resultadoCriticaPromax.DataHoraInicio = new DateTime(03 - 02 - 2020);
+            resultadoCriticaPromax.DataHoraFim = new DateTime(2020 / 02 / 03);
+            resultadoCriticaPromax.DataHoraInicio = new DateTime(2020 / 02 / 03);
             resultadoCriticaPromax.GrupoCritica = "Preco";
             resultadoCriticaPromax.Status = 5;
             //var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();

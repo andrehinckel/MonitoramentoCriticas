@@ -9,18 +9,14 @@ namespace MonitoramentoCriticas
 {
     class Program
     {
-        private static IResultadoPromaxHercules _resultadoPromaxHercules;
-        private readonly IResultadoCriticaHerculesRepository _resultadoCriticaHercules;
-        private readonly IResultadoCriticaPromaxRepository _resultadoCriticaPromax;
-
-        public Program()
-        {
-            _resultadoPromaxHercules = new ResultadoPromaxHercules(_resultadoCriticaHercules, _resultadoCriticaPromax);
-        }
+        private static IResultadoCriticaHerculesRepository _resultadoCriticaHercules;
+        private static IResultadoCriticaPromaxRepository _resultadoCriticaPromax;
 
         static async Task Main(string[] args)
         {
-            var teste = await _resultadoPromaxHercules.Main();
+            var service = new ResultadoPromaxHercules(_resultadoCriticaHercules, _resultadoCriticaPromax);
+
+            var teste = await service.Main();
 
             foreach (var item in teste)
             {
