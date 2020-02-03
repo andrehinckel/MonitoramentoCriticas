@@ -26,7 +26,7 @@ namespace Tests.Tests.DomainTest
         }
 
         [Test]
-        public void deve_retornar_critics_ok()
+        public void deve_retornar_criticas_ok()
         {
             var critica1 = new Critica()
             {
@@ -71,7 +71,7 @@ namespace Tests.Tests.DomainTest
         }
 
         [Test]
-        public void deve_retornar_critics_nok_quando_promax_e_hercules_sao_diferentes()
+        public void deve_retornar_criticas_nok_quando_promax_e_hercules_sao_diferentes()
         {
             //hercules
             var critica1 = new Critica()
@@ -120,6 +120,13 @@ namespace Tests.Tests.DomainTest
 
             _comparacaoResultadoPromaxHercules.GetNOKs(12345).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12345} no grupo de critica {resultadoHercules.GrupoCritica}");
             _comparacaoResultadoPromaxHercules.GetNOKs(12346).Should().Be($"O NOK foi do pedido que corresponde à chave {resultadoHercules.ChaveUnica} com o número da critica {12346} no grupo de critica {resultadoHercules.GrupoCritica}");
+        }
+
+        [Test]
+        public void deve_retornar_aviso_quando_não_houver_codigo_nok()
+        {
+           var result = _comparacaoResultadoPromaxHercules.GetNOKs(123);
+            result.Should().Be("Não foi possível encontrar o código informado");
         }
 
         [Test]
@@ -274,7 +281,7 @@ namespace Tests.Tests.DomainTest
         }
 
         [Test]
-        public void deve_retornar_criticas_noks_oks_quando_promax_hercules()
+        public void deve_retornar_criticas_noks_oks_do_promax_e_hercules()
         {
             //HerculesA
             var criticaHerculesA1 = new Critica()
