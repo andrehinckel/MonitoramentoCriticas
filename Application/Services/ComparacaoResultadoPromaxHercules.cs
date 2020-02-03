@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Domain.Entity;
 using Infra.Repositories;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,30 @@ namespace Application.Services
 
         public async Task<IList<ResultadoCriticaHerculesDto>> GetHercules()
         {
-            var resultadoHercules = await _resultadoCriticaHercules.ObterTodasAsCriticasHercules();
+            List<Critica> criticas = new List<Critica>();
+            criticas.Add(new Critica()
+            {
+                Alcada = 1,
+                NumeroCritica = 1999,
+                Status = 2
+            });
 
-            return resultadoHercules.Select(d => new ResultadoCriticaHerculesDto
+            ResultadoCriticaHercules resultadoCriticaHercules = new ResultadoCriticaHercules();
+            resultadoCriticaHercules.ChaveUnica = "252515";
+            resultadoCriticaHercules.CodigoFilial = 1;
+            resultadoCriticaHercules.CodigoPedido = 5;
+            resultadoCriticaHercules.Criticas = criticas;
+            resultadoCriticaHercules.DataHoraFim = new DateTime(03 - 02 - 2020);
+            resultadoCriticaHercules.DataHoraInicio = new DateTime(03 - 02 - 2020);
+            resultadoCriticaHercules.GrupoCritica = "Preco";
+            resultadoCriticaHercules.Status = 5;
+
+            List<ResultadoCriticaHercules> listaHercules = new List<ResultadoCriticaHercules>();
+            listaHercules.Add(resultadoCriticaHercules);
+
+            //var resultadoHercules = await _resultadoCriticaHercules.ObterTodasAsCriticasHercules();
+
+            return listaHercules.Select(d => new ResultadoCriticaHerculesDto
             {
                 DataHoraInicio = d.DataHoraInicio,
                 DataHoraFim = d.DataHoraFim,
@@ -38,9 +60,34 @@ namespace Application.Services
 
         public async Task<IList<ResultadoCriticaPromaxDto>> GetPromax()
         {
-            var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();
+            List<Critica> criticas = new List<Critica>();
+            criticas.Add(new Critica()
+            {
+                Alcada = 1,
+                NumeroCritica = 1999,
+                Status = 2
+            });
+            criticas.Add(new Critica()
+            {
+                Alcada = 1,
+                NumeroCritica = 1990,
+                Status = 2
+            });
+            ResultadoCriticaPromax resultadoCriticaPromax = new ResultadoCriticaPromax();
+            resultadoCriticaPromax.ChaveUnica = "2";
+            resultadoCriticaPromax.CodigoFilial = 1;
+            resultadoCriticaPromax.CodigoPedido = 5;
+            resultadoCriticaPromax.Criticas = criticas;
+            resultadoCriticaPromax.DataHoraFim = new DateTime(03 - 02 - 2020);
+            resultadoCriticaPromax.DataHoraInicio = new DateTime(03 - 02 - 2020);
+            resultadoCriticaPromax.GrupoCritica = "Preco";
+            resultadoCriticaPromax.Status = 5;
+            //var resultadoHercules = await _resultadoCriticaPromax.ObterTodasAsCriticasPromax();
 
-            return resultadoHercules.Select(d => new ResultadoCriticaPromaxDto
+            List<ResultadoCriticaPromax> listaPromax = new List<ResultadoCriticaPromax>();
+            listaPromax.Add(resultadoCriticaPromax);
+
+            return listaPromax.Select(d => new ResultadoCriticaPromaxDto
             {
                 DataHoraInicio = d.DataHoraFim,
                 DataHoraFim = d.DataHoraFim,
@@ -144,6 +191,7 @@ namespace Application.Services
         public async Task<List<ResultadoCriticaPromaxHerculesDto>> Main()
         {
             List<ResultadoCriticaPromaxHerculesDto> resultadoCriticaPromaxHercules = new List<ResultadoCriticaPromaxHerculesDto>();
+
             var getHercules = await GetHercules();
             var getPromax = await GetPromax();
 
@@ -175,6 +223,7 @@ namespace Application.Services
                     OKs = 1
                 });
             }
+
             return resultadoCriticaPromaxHercules;
         }
     }
